@@ -43,7 +43,7 @@ module.exports = {
 
     proxyTable: {
       '/logcheck': {
-        target: 'http://9.134.51.19:8666/mmsearchtest/logcheck/data/GetHistoryStatByType?date_range=04/28/2020%20-%2005/04/2020&log_range=', // 源地址
+        target: 'http://9.134.51.19:8666/mmsearchtest/logcheck/', // 源地址
         changeOrigin: true, // 改变源
         ws: true,
         pathRewrite: {

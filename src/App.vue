@@ -43,7 +43,7 @@
             </a-menu>
         </a-layout-sider>
         <a-layout>
-            <a-layout-content style="margin: 0 16px">
+            <a-layout-content style="margin: 0 16px; position: relative">
                 <a-breadcrumb style="margin: 16px 0"  align="left">
                     <a-breadcrumb-item v-for="bread in getBread" :key="bread">{{ bread }}</a-breadcrumb-item>
                 </a-breadcrumb>
@@ -52,7 +52,7 @@
                 </div>
             </a-layout-content>
             <br>
-            <a-layout-footer style="text-align: center">
+            <a-layout-footer style="text-align: center; bottom: 0;">
                 微信测试中心      Copyright © 1998-2022 Tencent Inc. All Rights Reserved.
             </a-layout-footer>
         </a-layout>
@@ -76,7 +76,7 @@ export default {
     },
     methods: {
         getSelectedKeys: function () {
-            console.log(window.location.href);
+            // console.log(window.location.href);
             let url = window.location.href;
             if (url.search("Dashboard") !== -1)
                 return {key: "0", box: ""};
@@ -106,6 +106,8 @@ export default {
 
 <style>
 #app {
+    position:relative;
+    min-height:100%;
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

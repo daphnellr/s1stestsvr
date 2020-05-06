@@ -6,7 +6,7 @@ import router from './router'
 import store from './store'
 import tools from './util/tools'
 import { Button, Layout, Menu, Avatar, Col, Row, Icon, Breadcrumb, Tabs, Table, Collapse, Select, DatePicker,
-Divider } from 'ant-design-vue'
+Divider, Tag, message } from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 import VCharts from 'v-charts'
 
@@ -18,16 +18,19 @@ Vue.use(Col);
 Vue.use(Row);
 Vue.use(Icon);
 Vue.use(Breadcrumb);
-Vue.use(Tabs)
-Vue.use(Table)
-Vue.use(Collapse)
-Vue.use(Select)
-Vue.use(DatePicker)
-Vue.use(Divider)
+Vue.use(Tabs);
+Vue.use(Table);
+Vue.use(Collapse);
+Vue.use(Select);
+Vue.use(DatePicker);
+Vue.use(Divider);
+Vue.use(Tag);
 
-Vue.use(VCharts)
+Vue.use(VCharts);
+
 
 Vue.prototype.$tools = tools;
+Vue.prototype.$message = message;
 
 /* eslint-disable no-new */
 new Vue({
@@ -36,4 +39,4 @@ new Vue({
   router,
   components: { App },
   template: '<App/>'
-})
+});

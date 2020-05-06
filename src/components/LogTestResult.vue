@@ -36,7 +36,12 @@
                     </a-collapse-panel>
                 </a-collapse>
                 <a-divider>测试结果</a-divider>
-                <a-table bordered :dataSource="taskList" :columns="taskColumns">
+                <a-table bordered :dataSource="taskList" :columns="taskColumns" style="margin: 0 0">
+                    <template slot="ret" slot-scope="text, record">
+                        <a-tag v-if="record.ret && record.ret === '失败'" color="red">{{record.ret}}</a-tag>
+                        <a-tag v-else-if="record.ret && record.ret.indexOf('成功') !== -1" color="green">{{record.ret}}</a-tag>
+                        <a-tag v-else color="red">{{record.ret}}</a-tag>
+                    </template>
                 </a-table>
             </a-tab-pane>
         </a-tabs>
@@ -47,6 +52,52 @@
 // eslint-disable-next-line
 import moment from 'moment';
 import axios from 'axios'
+const taskColumns = [{
+        title: '任务ID',
+        dataIndex: 'taskid',
+        sorter: (a, b) => a.taskid - b.taskid
+    },
+    {
+        title: '开始时间',
+        dataIndex: 'start_time',
+        width: 109,
+        sorter: (a, b) => a.start_time - b.start_time
+    },
+    {
+        title: '结束时间',
+        width: 106,
+        dataIndex: 'end_time'
+    },
+    {
+        title: '上报协议号',
+        dataIndex: 'logid'
+    },
+    {
+        title: '状态',
+        dataIndex: 'ret',
+        scopedSlots: {customRender: 'ret'}
+    },
+    {
+        title: '用例总数',
+        dataIndex: 'case_num'
+    },
+    {
+        title: '失败用例数',
+        dataIndex: 'failed_num'
+    },
+    {
+        title: '超时用例数',
+        dataIndex: 'not_run_num'
+    },
+    {
+        title: 'crash次数',
+        dataIndex: 'crash_num'
+    },
+    {
+        title: '报告',
+        dataIndex: 'report'
+    }];
+
 export default {
     name: 'PerTestResult',
     data () {
@@ -58,34 +109,23 @@ export default {
         };
         this.chartSettings2 = {
             limitShowNum: 5
-        }
+        };
         return {
             activeKey: ['collapse_1', 'collapse_2'],
             date_format: "YYYY-MM-DD",
             start_time: "",
             end_time: "",
+            taskColumns,
             logid_select: [],
             taskList: [],
             chartData1: {
-                columns: ['date', 'success_rates', 'failed_rates', 'OrderRate'],
-                rows: [
-                    { 'date': '2020-04-28', 'success_rates': 1393, 'failed_rates': 1093, 'OrderRate': 0.32 },
-                    { 'date': '2020-04-29', 'success_rates': 3530, 'failed_rates': 3230, 'OrderRate': 0.26 },
-                    { 'date': '2020-04-30', 'success_rates': 2923, 'failed_rates': 2623, 'OrderRate': 0.76 },
-                    { 'date': '2020-05-01', 'success_rates': 1723, 'failed_rates': 1423, 'OrderRate': 0.49 },
-                    { 'date': '2020-05-02', 'success_rates': 3792, 'failed_rates': 3492, 'OrderRate': 0.323 },
-                    { 'date': '2020-05-03', 'success_rates': 4593, 'failed_rates': 4293, 'OrderRate': 0.78 }
-                ]
+                columns: [],
+                rows: []
             },
             chartData2: {
                 columns: ['case_name', 'failed_counts'],
                 rows: [
-                    { 'case_name': 'case_name/1', 'failed_counts': 1393 },
-                    { 'case_name': 'case_name/2', 'failed_counts': 3530 },
-                    { 'case_name': 'case_name/3', 'failed_counts': 2923 },
-                    { 'case_name': 'case_name/4', 'failed_counts': 1723 },
-                    { 'case_name': 'case_name/5', 'failed_counts': 3792 },
-                    { 'case_name': 'case_name/6', 'failed_counts': 4593 }
+                    { 'case_name': '无', 'failed_counts': 0 }
                 ]
             }
         }
@@ -118,38 +158,110 @@ export default {
             this.start_time = this.$tools.getDefaultFormatDate(date);
             this.end_time = dateStrings[1];
 
-            // todo 在这里载入数据
-            // if (this.filter_list.length > 0) {
-            //     this.loadFilterColumn(this.filter_list[0].value, true);
-            // }
-            // this.loadCharts();
+            // 载入数据
+            this.loadTaskList();
         },
         updateByLogid () {
-            var logid = this.logid_select
+            let logid = this.logid_select;
             if (logid.length !== 0) {
-                console.info("logid=" + logid)
-                // todo 在这里载入数据
-                // if (this.filter_list.length > 0) {
-                //     this.loadFilterColumn(this.filter_list[0].value, true);
-                // }
-                // this.loadCharts();
+                console.info("logid=" + logid);
             }
+            // 载入数据
+           this.loadTaskList();
         },
         loadTaskList () {
             let _this = this;
-            axios.get('/logcheck')
+            if (_this.start_time.length === 0) {
+                _this.start_time = _this.getLastWeek();
+            }
+            if (_this.end_time.length === 0) {
+              _this.end_time = _this.getToday();
+            }
+            let start_time = _this.start_time.split('-');
+            let s_str = start_time[1] + '/' + start_time[2] + '/' + start_time[0];
+            let end_time = _this.end_time.split('-');
+            let e_str = end_time[1] + '/' + end_time[2] + '/' + end_time[0];
+            let url = '/logcheck/data/GetHistoryStatByType?date_range=' + s_str + '%20-%20' + e_str + '&log_range=';
+            axios.get(url)
                 .then(function (resp) {
-                    if (resp.data.Ret === 0) {
-                        _this.taskList = resp.data.Data;
+                    // console.info(resp);
+                    if (resp.data.pie.length > 0) {
                         // _this.$message.success("拉取任务列表成功！");
-                        console.info(_this.taskList)
+
+                        // 载入饼状图
+                        _this.chartData2.rows = [];
+                        if (resp.data.pie[0][1] === 0) {
+                            _this.chartData2.rows.push({ 'case_name': '无', 'failed_counts': 0 })
+                        } else {
+                            for (let i = 0; i < resp.data.pie.length; i++) {
+                                _this.chartData2.rows.push(
+                                  {'case_name': resp.data.pie[i][0], 'failed_counts': resp.data.pie[i][1]}
+                                )
+                            }
+                        }
+
+                        // 载入折线图
+                        if (resp.data.quxian_data.length !== 0 && resp.data.quxian_days.length !== 0) {
+                            _this.chartData1.columns = ['时间'];
+                            _this.chartData1.rows = [];
+                            for (let j = 0; j < resp.data.quxian_days.length; j++) {
+                                _this.chartData1.rows.push({'时间': resp.data.quxian_days[j]});
+                            }
+                            for (let i = 0; i < resp.data.quxian_data.length; i++) {
+                                _this.chartData1.columns.push(resp.data.quxian_data[i].name);
+                                let name = resp.data.quxian_data[i].name;
+                                for (let j = 0; j < resp.data.quxian_days.length; j++) {
+                                    _this.chartData1.rows[j][name] = resp.data.quxian_data[i].data[j];
+                                }
+                            }
+                        }
                     } else {
-                        _this.$message.error("拉取任务列表失败！Ret：" + resp.data.Ret);
+                        _this.$message.error("拉取任务列表失败！Ret：" + resp.data);
                     }
             }).catch(function (error) {
                 console.log(error);
                 _this.$message.error("拉取测试结果失败！");
-            })
+            });
+
+            // 载入表格数据
+            url = 'logcheck/data/GetCheckResultList?date_range=' + s_str + '%20-%20' + e_str + '&log_range=';
+            axios.get(url).then(function (resp) {
+                let data = [];
+                let ret_data = resp.data.data;
+                for (let i = 0; i < ret_data.length; i++) {
+                    ret_data[i].not_run_num = ret_data[i].case_num - ret_data[i].pass_num - ret_data[i].failed_num;
+                    if (ret_data[i].ret == null || ret_data[i].ret) {
+                        if (ret_data[i].ret === 1)
+                            if (ret_data[i].not_run_num === 0)
+                                ret_data[i].ret = '失败';
+                            else
+                                ret_data[i].ret = '超时';
+                        else if (ret_data[i].ret === 4 || ret_data[i].pass_num === ret_data[i].case_num)
+                            ret_data[i].ret = '成功但有crash';
+                        else
+                            ret_data[i].ret = ret_data[i].msg;
+                    } else {
+                        ret_data[i].ret = '成功';
+                    }
+                    data.push({
+                        key: i,
+                        taskid: ret_data[i].taskid,
+                        start_time: ret_data[i].start_time,
+                        end_time: ret_data[i].end_time,
+                        logid: ret_data[i].logid,
+                        ret: ret_data[i].ret,
+                        case_num: ret_data[i].case_num,
+                        failed_num: ret_data[i].failed_num,
+                        not_run_num: ret_data[i].not_run_num,
+                        crash_num: ret_data[i].crash_num,
+                        report: ret_data[i].report
+                    })
+                }
+                _this.taskList = data;
+            }).catch(function (error) {
+                console.log(error);
+                _this.$message.error("拉取测试结果失败！");
+            });
         }
     },
     mounted () {
