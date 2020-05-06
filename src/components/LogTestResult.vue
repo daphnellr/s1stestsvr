@@ -9,8 +9,8 @@
                                 <div align="left">协议号：</div>
                                 <a-select showSearch v-model="logid_select" optionFilterProp="children" mode="multiple"
                                           style="width: 100%" placeholder="选择协议号" option-label-prop="label">
-                                    <a-select-option value="log10991" label="10991">10991</a-select-option>
-                                    <a-select-option value="log17510" label="17510">17510</a-select-option>
+                                    <a-select-option value="10991" label="log10991">log10991</a-select-option>
+                                    <a-select-option value="17510" label="log17510">log17510</a-select-option>
                                 </a-select>
                             </a-col>
                             <a-col span="4">
@@ -171,7 +171,7 @@ export default {
                 console.info("logid=" + logid);
             }
             // 载入数据
-           this.loadTaskList();
+            this.loadTaskList();
         },
         loadTaskList () {
             let _this = this;
@@ -185,10 +185,9 @@ export default {
             let s_str = start_time[1] + '/' + start_time[2] + '/' + start_time[0];
             let end_time = _this.end_time.split('-');
             let e_str = end_time[1] + '/' + end_time[2] + '/' + end_time[0];
-            let url = '/logcheck/data/GetHistoryStatByType?date_range=' + s_str + '%20-%20' + e_str + '&log_range=';
+            let url = '/logcheck/data/GetHistoryStatByType?date_range=' + s_str + '%20-%20' + e_str + '&log_range=' + _this.logid_select;
             axios.get(url)
                 .then(function (resp) {
-                    // console.info(resp);
                     if (resp.data.pie.length > 0) {
                         // _this.$message.success("拉取任务列表成功！");
 
@@ -228,11 +227,10 @@ export default {
             });
 
             // 载入表格数据
-            url = 'logcheck/data/GetCheckResultList?date_range=' + s_str + '%20-%20' + e_str + '&log_range=';
+            url = 'logcheck/data/GetCheckResultList?date_range=' + s_str + '%20-%20' + e_str + '&log_range=' + _this.logid_select;
             axios.get(url).then(function (resp) {
                 let data = [];
                 let ret_data = resp.data.data;
-                console.info(ret_data);
                 for (let i = 0; i < ret_data.length; i++) {
                     ret_data[i].not_run_num = ret_data[i].case_num - ret_data[i].pass_num - ret_data[i].failed_num;
                     if (ret_data[i].ret == null || ret_data[i].ret) {
