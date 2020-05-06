@@ -36,11 +36,14 @@
                     </a-collapse-panel>
                 </a-collapse>
                 <a-divider>测试结果</a-divider>
-                <a-table bordered :dataSource="taskList" :columns="taskColumns" style="margin: 0 0">
+                <a-table id="table_result" bordered :dataSource="taskList" :columns="taskColumns" style="margin: 0 0; padding:0 0">
                     <template slot="ret" slot-scope="text, record">
                         <a-tag v-if="record.ret && record.ret === '失败'" color="red">{{record.ret}}</a-tag>
                         <a-tag v-else-if="record.ret && record.ret.indexOf('成功') !== -1" color="green">{{record.ret}}</a-tag>
                         <a-tag v-else color="red">{{record.ret}}</a-tag>
+                    </template>
+                    <template slot="report" slot-scope="text, record">
+                        <a :href="record.report" target="_blank">link</a>
                     </template>
                 </a-table>
             </a-tab-pane>
@@ -95,7 +98,8 @@ const taskColumns = [{
     },
     {
         title: '报告',
-        dataIndex: 'report'
+        dataIndex: 'report',
+        scopedSlots: {customRender: 'report'}
     }];
 
 export default {
@@ -228,6 +232,7 @@ export default {
             axios.get(url).then(function (resp) {
                 let data = [];
                 let ret_data = resp.data.data;
+                console.info(ret_data);
                 for (let i = 0; i < ret_data.length; i++) {
                     ret_data[i].not_run_num = ret_data[i].case_num - ret_data[i].pass_num - ret_data[i].failed_num;
                     if (ret_data[i].ret == null || ret_data[i].ret) {
@@ -254,7 +259,7 @@ export default {
                         failed_num: ret_data[i].failed_num,
                         not_run_num: ret_data[i].not_run_num,
                         crash_num: ret_data[i].crash_num,
-                        report: ret_data[i].report
+                        report: ret_data[i].url
                     })
                 }
                 _this.taskList = data;
@@ -273,5 +278,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-
+#table_result td{
+    padding: 5px 5px;
+    text-align: center;
+}
 </style>
