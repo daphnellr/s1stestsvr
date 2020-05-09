@@ -7,7 +7,7 @@
                         <a-row  type="flex" align="bottom" :gutter="16">
                             <a-col span="8" style="max-width: 220px">
                                 <div align="left">日期</div>
-                                <a-range-picker @change="onDateChange"  :defaultValue="[moment(getLastWeek(), date_format), moment(getToday(), date_format)]" :format="date_format"></a-range-picker>
+                                <a-range-picker @change="onDateChange"  :defaultValue="[moment(getLastMonth(), date_format), moment(getToday(), date_format)]" :format="date_format"></a-range-picker>
                             </a-col>
                             <a-col span="7" style="max-width: 260px">
                                 <div align="left">协议号：</div>
@@ -144,8 +144,8 @@ export default {
         getToday () {
             return this.$tools.getDefaultFormatDate(new Date());
         },
-        getLastWeek () {
-            return this.$tools_t.getLastWeek();
+        getLastMonth () {
+            return this.$tools_t.getLastMonth();
         },
         onDateChange (dates, dateStrings) {
             // console.log('From: ', dates[0], ', to: ', dates[1]);
@@ -172,7 +172,7 @@ export default {
         loadTaskList () {
             let _this = this;
             if (_this.start_time.length === 0) {
-                _this.start_time = _this.getLastWeek();
+                _this.start_time = _this.getLastMonth();
             }
             if (_this.end_time.length === 0) {
               _this.end_time = _this.getToday();

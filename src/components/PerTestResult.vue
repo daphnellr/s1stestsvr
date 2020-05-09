@@ -7,7 +7,7 @@
                         <a-row  type="flex" align="bottom"  :gutter="16">
                             <a-col span="8" style="width: 220px; text-align: center">
                                 <div align="left">日期</div>
-                                <a-range-picker @change="onDateChange"  :defaultValue="[moment(getLastWeek(), date_format), moment(getToday(), date_format)]" :format="date_format"></a-range-picker>
+                                <a-range-picker @change="onDateChange"  :defaultValue="[moment(getLastMonth(), date_format), moment(getToday(), date_format)]" :format="date_format"></a-range-picker>
                             </a-col>
                             <a-col span="8">
                                 <div align="left">页面类型</div>
@@ -161,8 +161,8 @@ export default {
         getToday () {
             return this.$tools.getDefaultFormatDate(new Date());
         },
-        getLastWeek () {
-            return this.$tools_t.getLastWeek();
+        getLastMonth () {
+            return this.$tools_t.getLastMonth();
         },
         onDateChange (dates, dateStrings) {
             this.start_time = dateStrings[0];

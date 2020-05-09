@@ -7,10 +7,15 @@ import LogTestResult from '../components/LogTestResult'
 Vue.use(Router);
 
 const router = new Router({
-    // mode: "history",
+    mode: "history",
     routes: [
         {
             path: '/',
+            name: '首页',
+            component: LogTestResult
+        },
+        {
+            path: '/mmsearchtest',
             name: '首页',
             component: LogTestResult
         },
