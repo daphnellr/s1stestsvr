@@ -5,8 +5,9 @@ import App from './App'
 import router from './router'
 import store from './store'
 import tools from './util/tools'
+import tools_t from './util/toolsfortime'
 import { Button, Layout, Menu, Avatar, Col, Row, Icon, Breadcrumb, Tabs, Table, Collapse, Select, DatePicker,
-Divider, Tag, message } from 'ant-design-vue'
+Divider, Tag, Card, Statistic, message } from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
 import VCharts from 'v-charts'
 
@@ -25,11 +26,14 @@ Vue.use(Select);
 Vue.use(DatePicker);
 Vue.use(Divider);
 Vue.use(Tag);
+Vue.use(Card);
+Vue.use(Statistic);
 
 Vue.use(VCharts);
 
 
 Vue.prototype.$tools = tools;
+Vue.prototype.$tools_t = tools_t;
 Vue.prototype.$message = message;
 
 /* eslint-disable no-new */

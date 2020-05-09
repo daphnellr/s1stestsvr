@@ -5,7 +5,7 @@
                 <br><br>
                 <a-col span="24" align="center">
                     <h3 v-if="collapsed" style="color: white">Result</h3>
-                    <h1 v-else style="color: white">测试结果</h1>
+                    <h1 v-else style="color: white">搜一搜<br>测试结果</h1>
                 </a-col>
             </a-row>
             <a-row>
@@ -20,26 +20,20 @@
             <a-menu theme="dark" mode="inline" style="padding-top: 20px" align="left"
                 :defaultSelectedKeys="[selectedKey.key]" :defaultOpenKeys="[selectedKey.box]">
                 <a-menu-item key="0">
-                    <a-icon type="dashboard" /><span>首页</span>
+                    <router-link to="/mmsearchtest/LogTestResult">
+                        <a-icon type="dashboard" /><span>首页</span>
+                    </router-link>
                 </a-menu-item>
                 <a-menu-item key="1">
-                    <router-link to="/LogTestResult">
+                    <router-link to="/mmsearchtest/LogTestResult">
                         <a-icon type="file-text" /><span>上报测试</span>
                     </router-link>
                 </a-menu-item>
                 <a-menu-item key="2">
-                    <router-link to="/PerTestResult">
+                    <router-link to="/mmsearchtest/PerTestResult">
                         <a-icon type="dot-chart" /><span>性能测试</span>
                     </router-link>
                 </a-menu-item>
-                <a-sub-menu key="sub1">
-                    <span slot="title"><a-icon type="team" /><span>Team</span></span>
-                    <a-menu-item key="3-1"><router-link to="/HelloWorld">Team 1</router-link></a-menu-item>
-                    <a-menu-item key="3-2"><router-link to="/HelloWorld">Team 2</router-link></a-menu-item>
-                </a-sub-menu>
-                <a-menu-item key="4"><router-link to="/HelloWorld">
-                    <a-icon type="file" /><span>File</span>
-                </router-link></a-menu-item>
             </a-menu>
         </a-layout-sider>
         <a-layout>
@@ -84,12 +78,6 @@ export default {
                 return {key: "1", box: ""};
             if (url.search("PerTestResult") !== -1)
                 return {key: "2", box: ""};
-            if (url.search("sub1-1") !== -1)
-                return {key: '3-1', box: 'sub1'};
-            if (url.search("sub1-2") !== -1)
-                return {key: '3-2', box: 'sub1'};
-            if (url.search("File") !== -1)
-                return {key: '4', box: ''};
             return {key: '0', box: ''};
         }
 

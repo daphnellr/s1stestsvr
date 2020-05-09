@@ -42,12 +42,12 @@ module.exports = {
     cssSourceMap: true,
 
     proxyTable: {
-      '/logcheck': {
-        target: 'http://9.134.51.19:8666/mmsearchtest/logcheck/', // 源地址
+      '/mmsearchtest/logcheck/data/': {
+        target: 'http://9.134.51.19:8666/mmsearchtest/logcheck/data', // 源地址
         changeOrigin: true, // 改变源
         ws: true,
         pathRewrite: {
-          '^/logcheck': '' // 路径重写
+          '^/mmsearchtest/logcheck/data/': '' // 路径重写
         }
       }
     }
