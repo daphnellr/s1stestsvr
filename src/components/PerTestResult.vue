@@ -28,7 +28,7 @@
                                 <a-row :gutter="16">
                                     <a-col :span="9">
                                         <a-card :bordered="true" style="height: 311px">  <!--111*n+89-->
-                                            <h3>页面加载时间(ms)</h3>
+                                            <h3>页面加载总时长(ms)</h3>
                                             <p>1758</p>
                                             <p class="p_css"  v-for="data in resourcelist_main" :key="data[0]">{{ data[0] }}:{{ data[1] }}</p>
                                         </a-card>
@@ -85,7 +85,7 @@
                     <a-collapse-panel header="示例2" key="collapse_2">
                         Cache:缓存读取时间，或304错误的处理时间<br>
                         BlockTime: 请求等待时间，取决于缓存检查，网络连接等待<br>
-                        DNS Lookup: DNS服务器茶渣时间，取决于dns服务的数量，dns注册的域<br>
+                        DNS Lookup: DNS服务器查询时间，取决于dns服务的数量，dns注册的域<br>
                         Connect：TCP链接时间，取决于链接类型<br>
                         Send first to last: 发送请求内容的时间，取决于请求内容大小及上行传输速度<br>
                         Wait: 等待相应的时间，取决于网络环境的响应，Web服务器的处理时间<br>
@@ -147,12 +147,12 @@ export default {
             resourcelist_left: [
                 ["加载总流量(kb)", "0"],
                 ["Cookies大小(kb)", "0"],
-                ["待定", "0"]
+                ["文件总数", "36"]
             ],
             resourcelist_right: [
                 ["requst请求数", "49"],
                 ["DOM节点数", "3878"],
-                ["memory", "74.27%"]
+                ["内存占用率", "74.27%"]
             ]
         }
     },
