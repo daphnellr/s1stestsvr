@@ -34,6 +34,12 @@
                         <a-icon type="dot-chart" /><span>性能测试</span>
                     </router-link>
                 </a-menu-item>
+                <a-sub-menu key="sub1">
+                    <span slot="title"><a-icon type="notification" /><span>其他</span></span>
+                    <a-menu-item key="3"><router-link to="/mmsearchtest/Others/WeiboCapture">
+                        <span>微博截图</span>
+                    </router-link></a-menu-item>
+                </a-sub-menu>
             </a-menu>
         </a-layout-sider>
         <a-layout>
@@ -78,6 +84,8 @@ export default {
                 return {key: "1", box: ""};
             if (url.search("PerTestResult") !== -1)
                 return {key: "2", box: ""};
+            if (url.search("Others/WeiboCapture") !== -1)
+                return {key: "3", box: "sub1"};
             return {key: '0', box: ''};
         }
 

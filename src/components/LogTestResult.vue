@@ -276,4 +276,8 @@ export default {
     padding: 5px 5px;
     text-align: center;
 }
+#table_result th{
+    padding: 5px 5px;
+    text-align: center;
+}
 </style>

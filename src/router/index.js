@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import store from '../store'
 import PerTestResult from '../components/PerTestResult'
 import LogTestResult from '../components/LogTestResult'
+import WeiboCapture from '../components/Others/WeiboCapture'
 
 Vue.use(Router);
 
@@ -28,6 +29,11 @@ const router = new Router({
             path: '/mmsearchtest/LogTestResult',
             name: '上报测试',
             component: LogTestResult
+        },
+        {
+            path: '/mmsearchtest/Others/WeiboCapture',
+            name: '其他-微博截图',
+            component: WeiboCapture
         }
     ]
 });
